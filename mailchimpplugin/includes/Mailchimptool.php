@@ -13,10 +13,10 @@ class Mailchimptool {
 
     function version() { return '0.1'; }
 
-    function __construct($host, $apikey) {
+    function __construct($host, $apikey, $apiuser = 'dummyuser') {
         $this->host = $host;
         $this->apikey = $apikey;
-        $this->url = $this->protocol . '://testheadnet:' . $this->apikey . '@' . $this->host . $this->restpath;
+        $this->url = $this->protocol . '://' . $apiuser . ':' . $this->apikey . '@' . $this->host . $this->restpath;
     }
 
     function basicinfo() {
@@ -61,13 +61,13 @@ class Mailchimptool {
     private function restGet($endpoint) {
         $curl = new curl;
         header('Content-Type: text/json');
-        error_log("GET: " . $endpoint);
         return $curl->get($this->url . $endpoint);
     }
     
     private function restPost($endpoint, $params) {
         $curl = new curl;
         header('Content-Type: text/json');
+
         return $curl->post($this->url . $endpoint, $params);
     }
 

@@ -1,6 +1,6 @@
 <?php
 
-class MailchimpPlugin {
+class MailchimpListsignup {
 
     /* NB: This apache config is necessary:
         Enable mod_rewrite, and:
@@ -50,31 +50,19 @@ class MailchimpPlugin {
   public function sniff_requests() {
     global $wp;
 
-    // Test list ids:
-    // 097da681eb - Headnet test Liste
-    // f2d2ebbd8f - Test Liste
-
     if (isset($wp->query_vars['api']) && $wp->query_vars['api'] == 'mc') {
         require_once(plugin_dir_path(__FILE__) . '/Mailchimptool.php');
         require_once(plugin_dir_path(__FILE__) . '/curl.php');
-        $this->mctool = new Mailchimptool('mailchimp hostname ', 'api key here');
+
+        $mchost = get_option('mclistsignuphost');
+        $mcapikey = get_option('mclistsignupapikey');
+
+        $this->mctool = new Mailchimptool($mchost, $mcapikey);
 
         if ($wp->query_vars['endpoint'] == 'lists') {
             print($this->signupForm());
         } elseif ($wp->query_vars['endpoint'] == 'subscribe') {
             print($this->subscribeUser());
-        } elseif ($wp->query_vars['endpoint'] == 'members') {
-            print("In members area.");
-
-            if (is_admin()) {
-                // $data = json_decode(urldecode($wp->query_vars['json']));
-                // $this->members($data);
-                print("Hello admin - members corner!");
-            } else {
-                print("Du er ikke admin.");
-            }
-        } else {
-            error_log("TEST: query vars here:\n" . print_r($wp->query_vars, true));
         }
 
         exit;
@@ -84,41 +72,42 @@ class MailchimpPlugin {
 
   private function signupForm() {
       header('Content-Type: text/plain');
-      $response = json_decode($this->mctool->lists());
+      $raw = $this->mctool->lists();
+      $response = json_decode($raw);
 
       if (is_object($response)) {
-          $res = '<form action="/api/mailchimp/subscribe" method="post" name="mcsignup" id="mcsignup"><br/>';
-          $res .= 'Liste<br/><select name="listid" id="listid">';
+          $res = '<form action="javascript:void(0);" name="mcsignupform" id="mcsignupform"><br/>';
+          $res .= 'Liste<br/><select name="mclistid" id="mclistid">';
           foreach ($response->lists as $list) {
               $res .= '<option value="' . $list->id . '">' . $list->name . '</option>';
           }
           $res .= '</select><br/>';
-          $res .= 'Email<br/><input type="email" name="email" id="email">';
-          $res .= 'Fornavn<br/><input type="text" name="fname" id="fname">';
-          $res .= 'Efternavn<br/><input type="text" name="lname" id="lname">';
-          $res .= '<br/><input type="submit" name="submit" value="Tilmeld mig" id="submit">';
-          $res .= '</form>';
+          $res .= 'Email<br/><input type="email" name="mcemail" id="mcemail">';
+          $res .= 'Fornavn<br/><input type="text" name="mcfname" id="mcfname">';
+          $res .= 'Efternavn<br/><input type="text" name="mclname" id="mclname">';
+          $res .= '<br/><button onclick="signup();">Tilmeld mig</button>';
+          $res .= '<input type=hidden name="mcformaction" value="' . get_home_url() . '/api/mailchimp/subscribe" id="mcformaction">';
+          $res .= '</form><br/><div id="mcresponseinfo"></div>';
           return $res;
       } else {
-          return "Cant understand what mc said: " . print_r($response, true);
+          error_log('Unable to understand what mailchimp said: ' . $raw);
+          return "Unable to understand what mailchimp said.";
       }
   }
 
   private function subscribeUser() {
 
       $raw = file_get_contents('php://input');
-      parse_str($raw, $data);
-      if (is_array($data)) {
-          $result = $this->mctool->subscribe($data['listid'], $data['email'], $data['fname'], $data['lname']);
+      $data = json_decode($raw);
+
+      if (is_object($data)) {
+          $result = $this->mctool->subscribe($data->mclistid, $data->mcemail, $data->mcfname, $data->mclname);
           $decres = json_decode($result);
           if (is_object($decres) && property_exists($decres, 'status')) {
               if ($decres->status === 'pending') {
-                  return("Tilmelding gik godt - du skal bare bekræfte den email der er sendt til " . $data->email);
+                  return("Tilmelding gik godt - du skal bare bekræfte den email der er sendt til " . $data->mcemail);
               } elseif ($decres->status > 399 && strpos($decres->detail, 'already a list member') !== FALSE) {
-                  error_log("\n\nInput: " . print_r($data,true) . "\n\nResult: " . print_r($result, true));
-                  // return("Det ser ud til at du allerede er tilmeldt med emailen " . $data['email']);
-                  wp_redirect("http://wordpress.meem.dk/?p=8");
-                  exit;
+                  return("Det ser ud til at du allerede er tilmeldt med emailen " . $data->mcemail);
               } else {
                   error_log("\n\nInput: " . print_r($data,true) . "\n\nResult: " . print_r($result, true));
                   return("Tilmelding gik galt.");
@@ -132,7 +121,9 @@ class MailchimpPlugin {
           error_log("Post data not valid: " . print_r($raw, true));
           return("Tilmelding gik galt");
       }
+
+      exit;
   }
 }
 
-new MailchimpPlugin();
+new MailchimpListsignup();
