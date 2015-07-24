@@ -19,25 +19,29 @@ class Mailchimptool {
         $this->url = $this->protocol . '://' . $apiuser . ':' . $this->apikey . '@' . $this->host . $this->restpath;
     }
 
-    function basicinfo() {
-        $curl = new curl;
-        header('Content-Type: text/plain');
-        return json_decode($curl->get($url));
-    }
-
     function lists($listid = '') {
-        return $this->restGet('lists/' . $listid);
+        return $this->restGET('lists/' . $listid);
     }
 
-    function members($listid) {
-        return $this->restGet('lists/' . $listid . '/members');
+    /* Returns a list of member of the list, or, if $member contains
+     * the md5 hash of a member's email, returns data for this specific member.
+     */
+    function members($listid, $member='') {
+        return $this->restGET("lists/$listid/members/$member");
+    }
+
+    /* Returns a list of member of the list, or, if $member contains
+     * the md5 hash of a member's email, returns data for this specific member.
+     */
+    function deletemember($listid, $email) {
+        return $this->restDELETE("lists/$listid/members/" . md5($email));
     }
 
     /* This subscribes a person, identified by email, and with first name and last name, to the list with id $listid.
      * Status = 'pending' means that the user must subsequently confirm the subscription.
      * Status = 'subscribed' means that the user is immediately subscribed.
      */
-    function subscribe($listid, $email, $fname, $lname, $status = 'pending') {
+    function subscribe($listid, $email, $fname, $lname, $status='pending') {
         $data = json_encode(array('email_address' => $email,
                                   'status' => $status,
                                   'merge_fields' => array('FNAME' => $fname,
@@ -45,38 +49,63 @@ class Mailchimptool {
                                   )
                              );
 
-        return $this->restPost('lists/' . $listid . '/members', $data);
+        return $this->restPOST('lists/' . $listid . '/members', $data);
     }
 
     function unsubscribe($listid, $email) {
-        /* NB. This does not yet work.
-           I made the patch function in curl.php, and that is probably not correct.
-
-        return $this->restPatch('lists/' . $listid . '/members', json_encode(array('email_address' => $email, 'status' => 'unsubscribed')));
-        */
-
-        return('Not yet implemented.');
+        $md5 = md5($email);
+        return $this->restPATCH("lists/$listid/members/" . md5($email) . '/', '{"status":"unsubscribed"}');
     }
 
-    private function restGet($endpoint) {
-        $curl = new curl;
-        header('Content-Type: text/json');
-        return $curl->get($this->url . $endpoint);
-    }
-    
-    private function restPost($endpoint, $params) {
-        $curl = new curl;
-        header('Content-Type: text/json');
 
-        return $curl->post($this->url . $endpoint, $params);
+    function updateSubscriptionstatus($listid, $email, $newstatus) {
+        return $this->restPATCH("lists/$listid/members/" . md5($email) . '/', '{"status":"' . $newstatus . '"}');
     }
 
-    private function restPatch($endpoint, $params) {
-        /* $curl = new curl;
-        header('Content-Type: text/json');
-        return $curl->patch($this->url . $endpoint, $params);
-        // NB: This does not work...
-        */
-        return('Not yet implemented.');
+    private function restGET($endpoint) {
+        $url = $this->url . $endpoint;
+        $headers = array('Content-Type: application/json');
+        $curl = curl_init($url);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+        $response = curl_exec($curl);
+        curl_close($curl);
+        return($response);
+    }
+    private function restPOST($endpoint, $data) {
+        $url = $this->url . $endpoint;
+        $headers = array('Content-Type: application/json');
+        $curl = curl_init($url);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($curl, CURLOPT_POST, true);
+        curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
+        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+        $response = curl_exec($curl);
+        curl_close($curl);
+        return($response);
+    }
+    private function restPATCH($endpoint, $data) {
+        $url = $this->url . $endpoint;
+        $headers = array('Content-Type: application/json');
+        $curl = curl_init($url);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'PATCH');
+        curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
+        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+        $response = curl_exec($curl);
+        curl_close($curl);
+        return($response);
+    }
+
+    private function restDELETE($endpoint) {
+        $url = $this->url . $endpoint;
+        $headers = array('Content-Type: application/json');
+        $curl = curl_init($url);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'DELETE');
+        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+        $response = curl_exec($curl);
+        curl_close($curl);
+        return($response);
     }
 }
