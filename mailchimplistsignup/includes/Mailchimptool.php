@@ -58,8 +58,14 @@ class Mailchimptool {
     }
 
 
-    function updateSubscriptionstatus($listid, $email, $newstatus) {
-        return $this->restPATCH("lists/$listid/members/" . md5($email) . '/', '{"status":"' . $newstatus . '"}');
+    function updateSubscriptionstatus($listid, $email, $fname, $lname, $newstatus) {
+        $data = json_encode(array('email_address' => $email,
+                                  'status' => $newstatus,
+                                  'merge_fields' => array('FNAME' => $fname,
+                                                          'LNAME' => $lname)
+                                  )
+                             );
+        return $this->restPATCH("lists/$listid/members/" . md5($email) . '/', $data);
     }
 
     private function restGET($endpoint) {

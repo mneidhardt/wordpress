@@ -1,10 +1,10 @@
 <?php
 /**
- * @package mailchimpplugin
+ * @package mailchimp-listsignup
  * @version 0.1
  */
 /*
-Plugin Name: mailchimpplugin
+Plugin Name: Mailchimp List Signup
 Description: Plugin that enables Mailchimp list signup for any list in Mailchimp account.
 Author: Michael Neidhardt
 Version: 0.1
@@ -15,7 +15,8 @@ in the plugins directory in Wordpress, e.g. wp-content/plugins/mailchimplistsign
 
 Now activate the plugin.
 In Settings/Mailchimp List Signup you store the hostname and the API Key for your Mailchimp account.
-Lastly, you add the shortcode [mcsignupform] to the page where you want the signup form.
+Lastly, you add the shortcode [mcsignupform] to the page where you want the signup form, and possibly
+the shortcode [mcsignoffform] to the page where you want the form for unsubscription.
 
 NB: The form shows all available lists in Mailchimp.
 */
@@ -89,8 +90,16 @@ add_action( 'wp_enqueue_scripts', 'my_scripts_method' );
  * want the sign up form.
  */
 function mcsignupform_func( $atts ) {
-    return file_get_contents(site_url() . '/api/mailchimp/lists/');
+    return file_get_contents(site_url() . '/api/mailchimp/signup/');
 }
 add_shortcode( 'mcsignupform', 'mcsignupform_func' );
+
+/* [mcsignoffform] This is the shortcode to use on the page where you
+ * want the unsubscribe form.
+ */
+function mcsignoffform_func( $atts ) {
+    return file_get_contents(site_url() . '/api/mailchimp/signoff/');
+}
+add_shortcode( 'mcsignoffform', 'mcsignoffform_func' );
 
 ?>

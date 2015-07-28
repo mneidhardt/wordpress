@@ -6,8 +6,8 @@ function signon() {
     data.mcfname = document.getElementById('mcfname').value;
     data.mclname = document.getElementById('mclname').value;
 
-    if (!data.mclistid || !data.mcemail || !data.mcfname || !data.mclname) {
-        document.getElementById('mcresponseinfo').innerHTML = "Udfyld venligst alle felter.";
+    if (!data.mclistid || !data.mcemail) {
+        document.getElementById('mcresponseinfo').innerHTML = "Udfyld venligst interesse- og email-feltet.";
         return;
     } else {
         doit(URL, data);
@@ -17,11 +17,10 @@ function signon() {
 function signoff() {
     var URL = document.getElementById('mcformactionoff').value;
     var data = {};
-    data.mclistid = document.getElementById('mclistid').value;
     data.mcemail = document.getElementById('mcemail').value;
 
-    if (!data.mclistid || !data.mcemail) {
-        document.getElementById('mcresponseinfo').innerHTML = "Udfyld venligst både liste og email.";
+    if (!data.mcemail) {
+        document.getElementById('mcresponseinfo').innerHTML = "Udfyld venligst email-feltet.";
         return;
     } else {
         doit(URL, data);

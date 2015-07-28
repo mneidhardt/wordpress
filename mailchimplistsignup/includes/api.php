@@ -13,6 +13,7 @@ class MailchimpListsignup {
 
 
   private $mctool;
+  private $mcoptions;
 
   /** Hook WordPress
    * @return void
@@ -53,13 +54,13 @@ class MailchimpListsignup {
     if (isset($wp->query_vars['api']) && $wp->query_vars['api'] == 'mc') {
         require_once(plugin_dir_path(__FILE__) . '/Mailchimptool.php');
 
-        $mchost = get_option('mclistsignuphost');
-        $mcapikey = get_option('mclistsignupapikey');
+        $this->mcoptions = array('mclistsignuphost', 'mclistsignupapikey');
 
-        $this->mctool = new Mailchimptool($mchost, $mcapikey);
 
-        if ($wp->query_vars['endpoint'] == 'lists') {
+        if ($wp->query_vars['endpoint'] == 'signup') {
             print($this->signupForm());
+        } elseif ($wp->query_vars['endpoint'] == 'signoff') {
+            print($this->signoffForm());
         } elseif ($wp->query_vars['endpoint'] == 'subscribe') {
             print($this->subscribeUser());
         } elseif ($wp->query_vars['endpoint'] == 'unsubscribe') {
@@ -71,14 +72,16 @@ class MailchimpListsignup {
   }
 
 
+
   private function signupForm() {
       header('Content-Type: text/plain');
+      $this->mctool = new Mailchimptool(get_option($this->mcoptions[0]), get_option($this->mcoptions[1]));
       $raw = $this->mctool->lists();
       $response = json_decode($raw);
 
       if (is_object($response)) {
           $res = '<form action="javascript:void(0);" name="mcsignupform" id="mcsignupform"><br/>';
-          $res .= 'Liste<br/><select name="mclistid" id="mclistid">';
+          $res .= 'Hvad har mest din interesse?<br/><select name="mclistid" id="mclistid">';
           foreach ($response->lists as $list) {
               $res .= '<option value="' . $list->id . '">' . $list->name . '</option>';
           }
@@ -87,35 +90,49 @@ class MailchimpListsignup {
           $res .= 'Fornavn<br/><input type="text" name="mcfname" id="mcfname">';
           $res .= 'Efternavn<br/><input type="text" name="mclname" id="mclname">';
           $res .= '<br/><button onclick="signon();">Tilmeld mig</button> ';
-          $res .= '<button onclick="signoff();">Frameld mig</button>';
           $res .= '<input type=hidden name="mcformactionon" value="' . get_home_url() . '/api/mailchimp/subscribe" id="mcformactionon">';
-          $res .= '<input type=hidden name="mcformactionoff" value="' . get_home_url() . '/api/mailchimp/unsubscribe" id="mcformactionoff">';
           $res .= '</form><br/><div id="mcresponseinfo"></div>';
           return $res;
       } else {
           error_log('Unable to understand what mailchimp said: ' . $raw);
-          return 'Der opstod et problem i f.m. kommunikation med Mailchimp';
+          return 'Der opstod et problem i kommunikationen med Mailchimp';
       }
   }
 
+  private function signoffForm() {
+      header('Content-Type: text/plain');
+      
+          $res = '<form action="javascript:void(0);" name="mcsignoffform" id="mcsignoffform"><br/>';
+          $res .= 'Email<br/><input type="email" name="mcemail" id="mcemail">';
+          $res .= '<button onclick="signoff();">Frameld alle nyhedsbreve</button>';
+          $res .= '<input type=hidden name="mcformactionoff" value="' . get_home_url() . '/api/mailchimp/unsubscribe" id="mcformactionoff">';
+          $res .= '</form><br/><div id="mcresponseinfo"></div>';
+
+          return $res;
+  }
   private function subscribeUser() {
 
       $raw = file_get_contents('php://input');
       $data = json_decode($raw);
 
+
       if (is_object($data)) {
+          if ( ! isset($data->mclistid) || empty($data->mclistid) ||
+               ! isset($data->mcemail) || empty($data->mcemail)) {
+              return '';
+          }
+
+          $this->mctool = new Mailchimptool(get_option($this->mcoptions[0]), get_option($this->mcoptions[1]));
           $raw = $this->mctool->members($data->mclistid, md5($data->mcemail));
 
           if ($raw) {
               $decres = json_decode($raw);
               if (is_object($decres) && property_exists($decres, 'status')) {
 
-                  if ($decres->status == 'unsubscribed') {
-                      $result = $this->mctool->updateSubscriptionstatus($data->mclistid, $data->mcemail, 'pending');
-                      return 'Tilmelding gik godt - du skal bare bekræfte den email der er sendt til ' . $data->mcemail;
-                  } elseif ($decres->status == 'pending') {
-                      $result = $this->mctool->updateSubscriptionstatus($data->mclistid, $data->mcemail, 'pending');
-                      return 'Patched from pending to pending';
+                  if ($decres->status == 'unsubscribed' || $decres->status == 'pending') {
+                      // If pending, set status to pending again, which will trigger a new confirmation email.
+                      $result = $this->mctool->updateSubscriptionstatus($data->mclistid, $data->mcemail, $data->mcfname, $data->mclname, 'pending');
+                      return 'Tilmelding gik godt - du skal bare bekræfte den email der er sendt til ' . $data->mcemail . '.';
                   } elseif ($decres->status == 'subscribed') {
                       return('Du er allerede tilmeldt.');
                   }
@@ -150,41 +167,36 @@ class MailchimpListsignup {
 
   private function unsubscribeUser() {
 
-      $raw = file_get_contents('php://input');
-      $data = json_decode($raw);
+      $raw1 = file_get_contents('php://input');
+      $data = json_decode($raw1);
 
+      if ( ! isset($data->mcemail) || empty($data->mcemail)) {
+          return '';
+      }
 
       if (is_object($data)) {
-          $raw = $this->mctool->members($data->mclistid, md5($data->mcemail));
-          error_log("RAWMEMBERUnsubscribe: " . $raw);
+          $this->mctool = new Mailchimptool(get_option($this->mcoptions[0]), get_option($this->mcoptions[1]));
 
+          $raw2 = $this->mctool->lists();
+          $response = json_decode($raw2);
 
-          if ($raw) {
-              $decres = json_decode($raw);
-              if (is_object($decres) && property_exists($decres, 'status')) {
-
-                  if ($decres->status == 'unsubscribed') {
-                      $result = $this->mctool->deletemember($data->mclistid, $data->mcemail);
-                      return 'Du er nu fjernet.';
-                  } elseif ($decres->status == 'pending') {
-                      $result = $this->mctool->updateSubscriptionstatus($data->mclistid, $data->mcemail, 'unsubscribed');
-                      return 'Du er nu frameldt.';
-                  } elseif ($decres->status == 'subscribed') {
-                      $result = $this->mctool->updateSubscriptionstatus($data->mclistid, $data->mcemail, 'unsubscribed');
-                      return 'Du er nu frameldt.';
-                  } elseif ($decres->status == '404') {
-                      return 'Du er ikke tilmeldt.';
-                  }
+          if (is_object($response)) {
+              foreach ($response->lists as $list) {
+                  $result = $this->mctool->updateSubscriptionstatus($list->id, $data->mcemail, '', '', 'unsubscribed');
+                  $decres = json_decode($result);
+                  error_log($list->id . ' -- ' . $list->name . ' -- ' . $data->mcemail . ' ' . $decres->status);
               }
+              return 'Du er nu frameldt alle nyhedsbreve.';
+          } else {
+              error_log("Fejl ved GET lists (unsubscribeUser): " . $raw2);
+              return 'Der opstod en fejl i kommunikationen med Mailchimp.';
           }
-
-          error_log("Some error, when unsubscribing: $raw");
-          return '';
-
       } else {
           error_log("POST data not valid: $raw");
           return'';
       }
+
+      exit;
   }
 }
 
