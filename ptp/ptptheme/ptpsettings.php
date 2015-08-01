@@ -28,6 +28,9 @@ function ptpconfig_menufunc() {
         $picsperrow = $_POST[ $option1 ];
 
         // Save the posted value in the database
+        if ( ! preg_match('/^\d{1,3}$/', $picsperrow)) {
+            $picsperrow = 2;
+        }
         update_option( $option1, $picsperrow );
 
         // Put a "settings saved" message on the screen
@@ -38,7 +41,7 @@ function ptpconfig_menufunc() {
     print('<form name="form1" method="post" action="">');
     print('<input type="hidden" name="' . $hidden . '" value="Y">');
     print('<tr><th scope="row"><label for="' . $option1 . '">Pictures per row on main page:</label></th>');
-    print('<td><input type="text" name="' . $option1 . '" value="' . $picsperrow . '" size="45" /></td></tr>');
+    print('<td><input type="number" name="' . $option1 . '" value="' . $picsperrow . '" size="45" /></td></tr>');
     print('<tr><td colspan="2"><input type="submit" name="Submit" value="Save" class="button-primary"/></td></tr>');
     print('</form></table></div>');
 }
