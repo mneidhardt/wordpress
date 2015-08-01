@@ -30,7 +30,7 @@ Home...<br/>
 			<?php
 			// Start the loop.
             $count=0;
-            $postsperrow=3;
+            $picsperrow = get_option('ptppicsperrow');
 			while ( have_posts() ) : the_post();
 
                 ++$count;
@@ -38,7 +38,7 @@ Home...<br/>
                 //print('<div><a href="' . get_permalink() . '">' . get_the_title() . '</a></div><p/>');
                 $content = get_the_content();
                 print($content . '&nbsp;');
-                if ($count % $postsperrow == 0) {
+                if ($count % $picsperrow == 0) {
                     print '<br/>';
                 }
 
