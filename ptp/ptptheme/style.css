@@ -13,15 +13,23 @@ Text Domain: ptptheme
 This theme, like WordPress, is licensed under the GPL.
 Use it to make something cool, have fun, and share what you've learned with others.
 */
-#headerbox {
-    background: #eeeeff;
-    float: right;
-    position: fixed;
-    width: 100%;
-    height: 50px;
-    top: 0;
-    z-index: 1;
+* {
+    box-sizing: border-box;
+    font: 16px "Open Sans", sans-serif;
 }
-#container{ 
-    margin-top: 50px;
+.header {
+    padding: 1px;
+}
+.menu {
+    width: 10%;
+    float: left;
+    padding: 15px;
+}
+.menuentry {
+    padding-bottom: 25px;
+}
+.main {
+    width: 80%;
+    float: left;
+    padding: 15px;
 }
