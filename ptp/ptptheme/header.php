@@ -22,10 +22,9 @@
 </head>
 
 <body <?php body_class(); ?>>
-<div class="menu">
-<div class="menuentry"><a href="/">Works</a></div>
-<div class="menuentry"><a href="/10-2/">Info</a></div>
-<div class="menuentry"><a href="">Contact</a></div>
+<div class="header">
+<p/>
+<a href="/">Works</a> | <a href="/10-2/">Info</a> | <a href="">Contact</a>
 </div>
 
 <div class="main">

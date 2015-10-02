@@ -15,7 +15,8 @@
 
 get_header(); ?>
 
-	<div id="primary" class="content-area">
+  <div class="main"></div>
+  <div class="centro">
 		<main id="main" class="site-main" role="main">
 
 		<?php if ( have_posts() ) : ?>
@@ -59,6 +60,6 @@ get_header(); ?>
 		?>
 
 		</main><!-- .site-main -->
-	</div><!-- .content-area -->
+	</div><!-- .centro -->
 
 <?php get_footer(); ?>
