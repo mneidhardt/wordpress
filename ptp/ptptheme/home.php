@@ -36,6 +36,8 @@ get_header(); ?>
 
                 ++$count;
                 $tpix = get_the_post_thumbnail($postid, 'thumbnail');
+                print('<a href="/?p=' . $postid . '">' . $tpix . '</a>');
+
                 if ($count % $picsperrow == 0) {
                     print '<br/>';
                 }
