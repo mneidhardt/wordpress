@@ -69,26 +69,26 @@ function bulkimport() {
        $post = array(
            'post_title' => $count,
            'post_content' => '',
+           'post_status' => 'publish',
            );
 
        $PID = wp_insert_post($post);
        $filetype = wp_check_filetype( basename($file), null );
 
        $attachment = array(
-           'guid'           => $dir['url'] . '/' . basename($file), 
            'post_mime_type' => $filetype['type'],
            'post_title'     => preg_replace( '/\.[^.]+$/', '', basename( $filename ) ),
            'post_content'   => '',
            'post_status'    => 'inherit'
        );
+
        // Insert the attachment.
        $attach_id = wp_insert_attachment( $attachment, $file, $PID);
-       
        
        // Generate the metadata for the attachment, and update the database record.
        $attach_data = wp_generate_attachment_metadata($attach_id, $file);
        wp_update_attachment_metadata($attach_id, $attach_data);
-
+       set_post_thumbnail($PID, $attach_id);
     }
 
     // error_log(print_r($files, true));

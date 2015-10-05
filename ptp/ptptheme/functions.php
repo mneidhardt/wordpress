@@ -30,6 +30,8 @@
  * @since Twenty Fifteen 1.0
  */
 
+add_theme_support( 'post-thumbnails' );
+
 include_once('ptpsettings.php');
 
 if ( ! isset( $content_width ) ) {

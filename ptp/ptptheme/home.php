@@ -32,12 +32,10 @@ get_header(); ?>
             $count=0;
             $picsperrow = get_option('ptppicsperrow');
 			while ( have_posts() ) : the_post();
+                $postid = get_the_ID();
 
                 ++$count;
-				//get_template_part( 'content', get_post_format() );
-                //print('<div><a href="' . get_permalink() . '">' . get_the_title() . '</a></div><p/>');
-                $content = get_the_content();
-                print($content . '&nbsp;');
+                $tpix = get_the_post_thumbnail($postid, 'thumbnail');
                 if ($count % $picsperrow == 0) {
                     print '<br/>';
                 }

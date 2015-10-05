@@ -11,7 +11,7 @@ get_header(); ?>
 	<div id="primary" class="content-area">
 		<main id="main" class="site-main" role="main">
 
-single!
+single!?!?!!
 		<?php
 		// Start the loop.
 		while ( have_posts() ) : the_post();
@@ -22,7 +22,30 @@ single!
 			 * (where ___ is the post format) and that will be used instead.
 			 */
 			// get_template_part( 'content', get_post_format() );
-            print('<h2>' . the_title() . '</h2>' . the_content());
+            // print('<h2>' . the_title() . '</h2>' . the_content());
+            /*$media = get_attached_media( 'image' );
+            foreach ($media as $image) {
+                print('<img src="' . $image->guid . '">');
+            }
+            */
+
+   $args = array(
+   'post_type' => 'attachment',
+   'numberposts' => -1,
+   'post_status' => null,
+   'post_parent' => $post->ID
+  );
+
+  $attachments = get_posts( $args );
+     if ( $attachments ) {
+        foreach ( $attachments as $attachment ) {
+           echo '<li>';
+           echo wp_get_attachment_image( $attachment->ID, 'full' );
+           echo '<p>';
+           echo apply_filters( 'the_title', $attachment->post_title );
+           echo '</p></li>';
+          }
+     }
 
 			// If comments are open or we have at least one comment, load up the comment template.
 			//if ( comments_open() || get_comments_number() ) :
