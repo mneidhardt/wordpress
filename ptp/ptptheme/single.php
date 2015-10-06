@@ -29,6 +29,9 @@ single!?!?!!
             }
             */
 
+   //$attdata = get_attached_media('image', $post-ID);
+   //print('ATTMEDIA: ' . print_r($attdata, true) . '<br>');
+
    $args = array(
    'post_type' => 'attachment',
    'numberposts' => -1,
@@ -45,6 +48,8 @@ single!?!?!!
            echo apply_filters( 'the_title', $attachment->post_title );
            echo '</p></li>';
           }
+     } else {
+         print('No attachments... args=' . print_r($args, true));
      }
 
 			// If comments are open or we have at least one comment, load up the comment template.
