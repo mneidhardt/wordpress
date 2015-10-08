@@ -11,7 +11,6 @@ get_header(); ?>
 	<div id="primary" class="content-area">
 		<main id="main" class="site-main" role="main">
 
-single!?!?!!
 		<?php
 		// Start the loop.
 		while ( have_posts() ) : the_post();
@@ -49,7 +48,7 @@ single!?!?!!
            echo '</p></li>';
           }
      } else {
-         print('No attachments... args=' . print_r($args, true));
+         print('Sorry, no image here.');
      }
 
 			// If comments are open or we have at least one comment, load up the comment template.

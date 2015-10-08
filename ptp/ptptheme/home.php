@@ -19,36 +19,47 @@ get_header(); ?>
   <div class="centro">
 		<main id="main" class="site-main" role="main">
 
-        <?php
+		<?php if ( have_posts() ) : ?>
 
-        $args = array( 'posts_per_page' => 50, 'orderby' => 'date', 'order' => 'ASC');
-        $posts = get_posts($args);
-        $count=0;
-        $picsperrow = get_option('ptppicsperrow');
+			<?php if ( is_home() && ! is_front_page() ) : ?>
+				<header>
+					<h1 class="page-title screen-reader-text"><?php single_post_title(); ?></h1>
+				</header>
+			<?php endif; ?>
 
-        foreach ($posts as $post ) {
-            setup_postdata( $post );
-            ++$count;
-            $postid = get_the_ID();
+			<?php
+			// Start the loop.
+            $count=0;
+            $picsperrow = get_option('ptppicsperrow');
+			while ( have_posts() ) : the_post();
+                $postid = get_the_ID();
+                ++$count;
+                $media = get_attached_media( 'image' );
+                
+                if (is_array($media) && sizeof($media) > 0) {
+                    $tpix = get_the_post_thumbnail($postid, 'thumbnail');
+                    print('<a href="/?p=' . $postid . '">' . $tpix . '</a> ');
 
-            $tpix = get_the_post_thumbnail($postid, 'thumbnail');
-            print('<a href="/?p=' . $postid . '">' . $tpix . '</a>&nbsp;');
+                    if ($count % $picsperrow == 0) {
+                        print '<br/>';
+                    }
+                }
 
-            if ($count % $picsperrow == 0) {
-                print '<br/>';
-            }
-        }
-        wp_reset_postdata();
+			// End the loop.
+			endwhile;
 
-		// Previous/next page navigation.
-		/*
-        the_posts_pagination( array(
-			'prev_text'          => __( 'Previous page' ),
-			'next_text'          => __( 'Next page' ),
-			'before_page_number' => '<span class="meta-nav screen-reader-text">' . __( 'Page' ) . ' </span>',
-		) );
-        */
+			// Previous/next page navigation.
+			the_posts_pagination( array(
+				'prev_text'          => __( 'Previous page' ),
+				'next_text'          => __( 'Next page' ),
+				'before_page_number' => '<span class="meta-nav screen-reader-text">' . __( 'Page' ) . ' </span>',
+			) );
 
+		// If no content, include the "No posts found" template.
+		else :
+			get_template_part( 'content', 'none' );
+
+		endif;
 		?>
 
 		</main><!-- .site-main -->

@@ -1,7 +1,5 @@
 <?php
 /**
- * Twenty Fifteen functions and definitions
- *
  * Set up the theme and provides some helper functions, which are used in the
  * theme as custom template tags. Others are attached to action and filter
  * hooks in WordPress to change core functionality.
@@ -38,3 +36,18 @@ if ( ! isset( $content_width ) ) {
 	$content_width = 660;
 }
 
+
+function home_postorder( $query ) {
+    if ( is_admin() || ! $query->is_main_query() )
+        return;
+
+    if ( is_home() ) {
+        // Display only 1 post for the original blog archive
+        $query->set( 'orderby', 'date' );
+        $query->set( 'order', 'ASC' );
+        $query->set( 'posts_per_page', 50);
+        return;
+    }
+
+}
+add_action( 'pre_get_posts', 'home_postorder', 1 );
