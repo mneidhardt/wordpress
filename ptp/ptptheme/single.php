@@ -4,53 +4,33 @@
  *
  * @package WordPress
  * @subpackage ptptheme
+
+      NB: All the stuff related to the carousel should only be printed if there are multiple images!
  */
 
 get_header(); ?>
-
 	<div id="primary" class="content-area">
 		<main id="main" class="site-main" role="main">
 
 		<?php
 		// Start the loop.
 		while ( have_posts() ) : the_post();
+            $args = array(
+            'post_type' => 'attachment',
+            'numberposts' => -1,
+            'post_status' => null,
+            'post_parent' => $post->ID
+            );
 
-			/*
-			 * Include the post format-specific template for the content. If you want to
-			 * use this in a child theme, then include a file called called content-___.php
-			 * (where ___ is the post format) and that will be used instead.
-			 */
-			// get_template_part( 'content', get_post_format() );
-            // print('<h2>' . the_title() . '</h2>' . the_content());
-            /*$media = get_attached_media( 'image' );
-            foreach ($media as $image) {
-                print('<img src="' . $image->guid . '">');
+            $attachments = get_posts( $args );
+            if ( $attachments ) {
+                print('<table border=0><tr>');
+                foreach ( $attachments as $attachment ) {
+                    print('<td>' . wp_get_attachment_image( $attachment->ID, 'full' ) . '</td>');
+                }
+                print('</tr></table>');
             }
-            */
-
-   //$attdata = get_attached_media('image', $post-ID);
-   //print('ATTMEDIA: ' . print_r($attdata, true) . '<br>');
-
-   $args = array(
-   'post_type' => 'attachment',
-   'numberposts' => -1,
-   'post_status' => null,
-   'post_parent' => $post->ID
-  );
-
-  $attachments = get_posts( $args );
-     if ( $attachments ) {
-        foreach ( $attachments as $attachment ) {
-           echo '<li>';
-           echo wp_get_attachment_image( $attachment->ID, 'full' );
-           echo '<p>';
-           echo apply_filters( 'the_title', $attachment->post_title );
-           echo '</p></li>';
-          }
-     } else {
-         print('Sorry, no image here.');
-     }
-
+            
 			// If comments are open or we have at least one comment, load up the comment template.
 			//if ( comments_open() || get_comments_number() ) :
 			//	comments_template();
