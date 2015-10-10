@@ -28,13 +28,14 @@ function ptpconfig_menufunc() {
         // Read their posted value
         $picsperrow = $_POST[ $option1 ];
         $bulkimport = $_POST[ $option2 ];
+
         if (isset($bulkimport) && $bulkimport == 'on') {
             bulkimport();
         }
 
         // Save the posted value in the database
         if ( ! preg_match('/^\d{1,3}$/', $picsperrow)) {
-            $picsperrow = 2;
+            $picsperrow = 3;
         }
         update_option( $option1, $picsperrow );
 
@@ -58,40 +59,51 @@ function bulkimport() {
     require_once( ABSPATH . 'wp-admin/includes/image.php' );
     // $dir = wp_upload_dir()['basedir'] . '/bulk';
     $dir = wp_upload_dir();
-    $files = glob($dir['basedir'] . '/bulk/*');
 
-    $count=0;
+return;
+// Not doing anything here unless u remove the return stmt...
 
-    foreach ($files as $file) {
-        ++$count;
-        // error_log($file);
 
-       $post = array(
-           'post_title' => $count,
-           'post_content' => '',
-           'post_status' => 'publish',
+    $imagesubdir = 'tokyo2';
+    $category4images = 'Tokyo';
+
+    $files = glob($dir['basedir'] . "/$imagesubdir/*");
+
+    if (is_array($files) && sizeof($files) > 0) {
+        asort($files);
+        $count=0;
+    
+        foreach ($files as $file) {
+            ++$count;
+    
+           $post = array(
+               'post_title' => $category4images,
+               'post_content' => '',
+               'post_status' => 'publish',
+               'post_category'  => array(get_cat_id($category4images))
+               );
+    
+           $PID = wp_insert_post($post);
+           $filetype = wp_check_filetype( basename($file), null );
+    
+           $attachment = array(
+               'post_mime_type' => $filetype['type'],
+               'post_title'     => preg_replace( '/\.[^.]+$/', '', basename( $filename ) ),
+               'post_content'   => '',
+               'post_status'    => 'inherit',
            );
-
-       $PID = wp_insert_post($post);
-       $filetype = wp_check_filetype( basename($file), null );
-
-       $attachment = array(
-           'post_mime_type' => $filetype['type'],
-           'post_title'     => preg_replace( '/\.[^.]+$/', '', basename( $filename ) ),
-           'post_content'   => '',
-           'post_status'    => 'inherit'
-       );
-
-       // Insert the attachment.
-       $attach_id = wp_insert_attachment( $attachment, $file, $PID);
-       
-       // Generate the metadata for the attachment, and update the database record.
-       $attach_data = wp_generate_attachment_metadata($attach_id, $file);
-       wp_update_attachment_metadata($attach_id, $attach_data);
-       set_post_thumbnail($PID, $attach_id);
+    
+           // Insert the attachment.
+           $attach_id = wp_insert_attachment( $attachment, $file, $PID);
+           
+           // Generate the metadata for the attachment, and update the database record.
+           $attach_data = wp_generate_attachment_metadata($attach_id, $file);
+           wp_update_attachment_metadata($attach_id, $attach_data);
+           set_post_thumbnail($PID, $attach_id);
+        }
+    
+        // error_log(print_r($files, true));
     }
-
-    // error_log(print_r($files, true));
 }
 /* ----------------------------------------------------------------------------------------------------------- */
 

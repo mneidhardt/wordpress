@@ -26,7 +26,9 @@ get_header(); ?>
             if ( $attachments ) {
                 print('<table border=0><tr>');
                 foreach ( $attachments as $attachment ) {
-                    print('<td>' . wp_get_attachment_image( $attachment->ID, 'full' ) . '</td>');
+                    $catg = get_the_category($post->ID);
+                    print('<td>' . $catg[0]->name . '<br>' .
+                          wp_get_attachment_image( $attachment->ID, 'full' ) . '</td>');
                 }
                 print('</tr></table>');
             }
