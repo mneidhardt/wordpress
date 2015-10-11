@@ -34,17 +34,20 @@ get_header(); ?>
 			while ( have_posts() ) : the_post();
                 $postid = get_the_ID();
                 $media = get_attached_media( 'image' );
+
+                $categs = get_the_category();
+                $title = '';
+                if (!empty($categs)) {
+                    foreach ($categs as $categ) {
+                        $title .= $categ->name . ' ';
+                    }
+                }
                 
                 if (is_array($media) && sizeof($media) > 0) {
                     ++$count;
-                    $tpix = get_the_post_thumbnail($postid, 'thumbnail');
+                    $tpix = get_the_post_thumbnail($postid, 'thumbnail', 'title=' . $title);
                     print('<a href="/?p=' . $postid . '">' . $tpix . '</a> ');
                     
-                    /*debug display here
-                    foreach ($media as $k => $v) {
-                        print(print_r($k, true) . ' == ' . print_r($v, true) . '!!!<br>');
-                    }*/
-
                     if ($count % $picsperrow == 0) {
                         print '<br/>';
                     }
