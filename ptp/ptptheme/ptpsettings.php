@@ -1,5 +1,4 @@
 <?php
-/* ------------------------------This enables users to set mailchimp host + api key in admin interface --------- */
 add_action('admin_menu', 'ptpconfig_menu');
 
 function ptpconfig_menu() {
@@ -66,43 +65,65 @@ function bulkimport($subdir, $category) {
     $dir = wp_upload_dir();
     $files = glob($dir['basedir'] . "/bulk/$subdir/*");
 
+    //if (preg_match('/\.(jpg|jpeg|png)$/i', $file)) {
+
     if (is_array($files) && sizeof($files) > 0) {
         asort($files);
         $count=0;
-    
+
+        /* I set predecessor and successor for each file,
+           via wp_update_post.
+        */
+        $P0 = '';
+
         foreach ($files as $file) {
             ++$count;
-    
-           $post = array(
-               'post_title' => $category,
-               'post_content' => '',
-               'post_status' => 'publish',
-               'post_category'  => array(get_cat_id($category))
-               );
-    
-           $PID = wp_insert_post($post);
-           $filetype = wp_check_filetype( basename($file), null );
-    
-           $attachment = array(
-               'post_mime_type' => $filetype['type'],
-               'post_title'     => preg_replace( '/\.[^.]+$/', '', basename( $filename ) ),
-               'post_content'   => '',
-               'post_status'    => 'inherit',
-           );
-    
-           // Insert the attachment.
-           $attach_id = wp_insert_attachment( $attachment, $file, $PID);
-           
-           // Generate the metadata for the attachment, and update the database record.
-           $attach_data = wp_generate_attachment_metadata($attach_id, $file);
-           wp_update_attachment_metadata($attach_id, $attach_data);
-           set_post_thumbnail($PID, $attach_id);
+            $P2 = insertImagepost($file, $category);
+            if (isset($P1)) {
+                wp_update_post(array('ID' => $P1, 'post_content' => "$P0,$P2"));
+                $P0 = $P1;
+                $P1 = $P2;
+            } else {
+                $P1 = $P2;
+            }
         }
+
+        // Set predecessor for last file in this import.
+        wp_update_post(array('ID' => $P2, 'post_content' => "$P0,"));
     
-        return('Imported ' . $count . ' files. Found ' . sizeof($files) . ' in ' . $subdir . ' Catg=' . $category);
+        return($output . '<br>Imported ' . $count . ' files from ' . $subdir . ' Catg=' . $category);
     } else {
-        return('Did not import anything.');
+        return('No files found, so did not import anything.');
     }
+}
+
+function insertImagepost($file, $category) {
+    $post = array(
+        'post_title' => $category,
+        'post_content' => '',
+        'post_status' => 'publish',
+        'post_category'  => array(get_cat_id($category))
+        );
+    
+    $PID = wp_insert_post($post);
+    $filetype = wp_check_filetype( basename($file), null );
+    
+    $attachment = array(
+        'post_mime_type' => $filetype['type'],
+        'post_title'     => preg_replace( '/\.[^.]+$/', '', basename($file) ),
+        'post_content'   => '',
+        'post_status'    => 'inherit',
+    );
+    
+    // Insert the attachment.
+    $attach_id = wp_insert_attachment( $attachment, $file, $PID);
+           
+    // Generate the metadata for the attachment, and update the database record.
+    $attach_data = wp_generate_attachment_metadata($attach_id, $file);
+    wp_update_attachment_metadata($attach_id, $attach_data);
+    set_post_thumbnail($PID, $attach_id);
+
+    return($PID);
 }
 /* ----------------------------------------------------------------------------------------------------------- */
 

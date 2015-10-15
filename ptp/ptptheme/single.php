@@ -24,9 +24,25 @@ get_header(); ?>
 
             $attachments = get_posts( $args );
             if ( $attachments ) {
-                print('<table border=0><tr>');
+
+                /* I expect the content of all posts to be ID,ID,
+                   i.e. the ID of the previous post followed by a comma and
+                   the ID of the next post, so users can browse through
+                   all images. The first has no previous, and the last has no next, though.
+                   See ptpsettings.php, where this content is added.
+                */
+                $cnt = explode(',', get_the_content());
+                $navi = '';
+
+                if (sizeof($cnt) == 2) {
+                    $navi = "<a href='/?p=$cnt[0]'>&lt;&lt;</a> " . 
+                            " <a href='/?p=$cnt[1]'>&gt;&gt;</a>";
+                } 
+
+                $catg = get_the_category($post->ID);
+
+                print($navi . '<table border=0><tr>');
                 foreach ( $attachments as $attachment ) {
-                    $catg = get_the_category($post->ID);
                     print('<td>' . $catg[0]->name . '<br>' .
                           wp_get_attachment_image( $attachment->ID, 'full' ) . '</td>');
                 }
