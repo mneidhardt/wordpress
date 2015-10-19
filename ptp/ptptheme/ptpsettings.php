@@ -15,22 +15,29 @@ function ptpconfig_menufunc() {
         wp_die(__('Du har ikke rettigheder til denne side.'));
     }
 
+    $option0 = 'ptppicsperpage';
     $option1 = 'ptppicsperrow';
     $option2 = 'ptpbulkimportsubdir';
     $option3 = 'ptpbulkimportcategory';
     $hidden1 = 'hidden1';
     $hidden2 = 'hidden2';
 
+    $picsperpage = get_option($option0);
     $picsperrow = get_option($option1);
 
     // See if the user has posted us some information
     // If they did, this hidden field will be set to 'Y'
     if( isset($_POST[ $hidden1 ]) && $_POST[ $hidden1 ] == 'Y' ) {
         // Read their posted value
+        $picsperpage = $_POST[ $option0 ];
         $picsperrow = $_POST[ $option1 ];
+        if ( ! preg_match('/^\d{1,3}$/', $picsperpage)) {
+            $picsperpage = 25;
+        }
         if ( ! preg_match('/^\d{1,3}$/', $picsperrow)) {
             $picsperrow = 3;
         }
+        update_option( $option0, $picsperpage );
         update_option( $option1, $picsperrow );
 
         // Put a "settings saved" message on the screen
@@ -43,7 +50,9 @@ function ptpconfig_menufunc() {
     print('<div class="wrap"><h2>' . __('Setup stuff', 'menu-test') . '</h2><table class="form-table">');
     print('<form name="form1" method="post" action="">');
     print('<input type="hidden" name="' . $hidden1 . '" value="Y">');
-    print('<tr><th scope="row"><label for="' . $option1 . '">Pictures per row on main page:</label></th>');
+    print('<tr><th scope="row"><label for="' . $option0 . '">Pictures per page:</label></th>');
+    print('<td><input type="number" name="' . $option0 . '" value="' . $picsperpage . '" size="45" /></td></tr>');
+    print('<tr><th scope="row"><label for="' . $option1 . '">Pictures per row:</label></th>');
     print('<td><input type="number" name="' . $option1 . '" value="' . $picsperrow . '" size="45" /></td></tr>');
     print('<tr><td colspan="2"><input type="submit" name="Submit" value="Save" class="button-primary"/></td></tr>');
     print('</form></table><hr>');

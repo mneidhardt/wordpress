@@ -52,7 +52,12 @@ function home_postorder( $query ) {
         // Display only 1 post for the original blog archive
         $query->set( 'orderby', 'date' );
         $query->set( 'order', 'ASC' );
-        $query->set( 'posts_per_page', 50);
+        $ptppicsperpage = get_option('ptppicsperpage');
+        if ( ! preg_match('/^\d{1,3}$/', $ptppicsperpage)) {
+            $ptppicsperpage = 25;
+        }
+        error_log("PPP=$ptppicsperpage");
+        $query->set( 'posts_per_page', $ptppicsperpage);
         return;
     }
 
