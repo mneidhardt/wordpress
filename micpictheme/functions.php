@@ -21,7 +21,7 @@
  * {@link https://codex.wordpress.org/Plugin_API}
  *
  * @package WordPress
- * @subpackage ptptheme
+ * @subpackage micpictheme
  */
 
 /**
@@ -56,7 +56,7 @@ function home_postorder( $query ) {
         if ( ! preg_match('/^\d{1,3}$/', $ptppicsperpage)) {
             $ptppicsperpage = 25;
         }
- 
+        error_log("PPP=$ptppicsperpage");
         $query->set( 'posts_per_page', $ptppicsperpage);
         return;
     }

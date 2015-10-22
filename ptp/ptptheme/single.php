@@ -24,27 +24,11 @@ get_header(); ?>
 
             $attachments = get_posts( $args );
             if ( $attachments ) {
-
-                /* I expect the content of all posts to be ID,ID,
-                   i.e. the ID of the previous post followed by a comma and
-                   the ID of the next post, so users can browse through
-                   all images. The first has no previous, and the last has no next, though.
-                   See ptpsettings.php, where this content is added.
-                */
-                $cnt = explode(',', get_the_content());
-                $navi = '';
-
-                if (sizeof($cnt) == 2) {
-                    $navi = "<a href='/?p=$cnt[0]'>&lt;&lt;</a> " . 
-                            " <a href='/?p=$cnt[1]'>&gt;&gt;</a>";
-                } 
-
-                $catg = get_the_category($post->ID);
-
-                print($navi . '<table border=0><tr>');
+                print('<table border=0><tr>');
                 foreach ( $attachments as $attachment ) {
-                    print('<td>' . $catg[0]->name . '<br>' .
-                          wp_get_attachment_image( $attachment->ID, 'full' ) . '</td>');
+                    print('<td>' .
+                          wp_get_attachment_image( $attachment->ID, 'full' ) .
+                          '</td>');
                 }
                 print('</tr></table>');
             }
@@ -53,16 +37,6 @@ get_header(); ?>
 			//if ( comments_open() || get_comments_number() ) :
 			//	comments_template();
 			//endif;
-
-			// Previous/next post navigation.
-			the_post_navigation( array(
-				'next_text' => '<span class="meta-nav" aria-hidden="true">' . __( 'Next' ) . '</span> ' .
-					'<span class="screen-reader-text">' . __( 'Next post:' ) . '</span> ' .
-					'<span class="post-title">%title</span>',
-				'prev_text' => '<span class="meta-nav" aria-hidden="true">' . __( 'Previous' ) . '</span> ' .
-					'<span class="screen-reader-text">' . __( 'Previous post:' ) . '</span> ' .
-					'<span class="post-title">%title</span>',
-			) );
 
 		// End the loop.
 		endwhile;

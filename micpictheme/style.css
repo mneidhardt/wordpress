@@ -1,0 +1,39 @@
+/*
+Theme Name: micpictheme
+Theme URI: http://localhost
+Author: mic hisself
+Author URI: http://meem.dk
+Description: Based on twentyfifteen
+Version: 1.0
+License: GNU General Public License v2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
+Tags: black, blue, gray, pink, purple, white, yellow, dark, light, two-columns, left-sidebar, fixed-layout, responsive-layout, accessibility-ready, custom-background, custom-colors, custom-header, custom-menu, editor-style, featured-images, microformats, post-formats, rtl-language-support, sticky-post, threaded-comments, translation-ready
+Text Domain: micpictheme
+
+This theme, like WordPress, is licensed under the GPL.
+Use it to make something cool, have fun, and share what you've learned with others.
+*/
+* {
+    box-sizing: border-box;
+    font: 16px "Open Sans", sans-serif;
+}
+.header {
+    padding: 1px;
+    background: #ffffff;
+    position: fixed;
+    width: 100%;
+    height: 50px;
+    top: 0;
+}
+.main {
+    clear: both;
+    margin-top: 60px;
+}
+.centro {
+    clear: both;
+    margin-left: auto;
+    margin-right: auto;
+}
+a:link {
+    text-decoration: none;
+}
