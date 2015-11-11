@@ -1,0 +1,45 @@
+/*
+Theme Name: jactheme
+Theme URI: http://localhost
+Author: mic hisself
+Author URI: http://meem.dk
+Description: Based on twentyfifteen
+Version: 1.0
+License: GNU General Public License v2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
+Tags: black, blue, gray, pink, purple, white, yellow, dark, light, two-columns, left-sidebar, fixed-layout, responsive-layout, accessibility-ready, custom-background, custom-colors, custom-header, custom-menu, editor-style, featured-images, microformats, post-formats, rtl-language-support, sticky-post, threaded-comments, translation-ready
+Text Domain: jactheme
+
+This theme, like WordPress, is licensed under the GPL.
+Use it to make something cool, have fun, and share what you've learned with others.
+*/
+* {
+    box-sizing: border-box;
+    font: 16px "Courier New", sans-serif;
+}
+body {
+    background-color: #aaaaaa;
+}
+
+.header {
+    margin: 0 0 0 0;
+    font: bold 26px "Courier New", sans-serif;
+    background-color: #888888;
+    position: fixed;
+}
+.centro {
+    max-width: 100%;
+    margin: 0 auto;
+}
+
+.main {
+    clear: both;
+    max-width: 800px;
+    margin-top: 25px;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: #DDDDDD;
+}
+a:link {
+    text-decoration: none;
+}
