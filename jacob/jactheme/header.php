@@ -21,6 +21,11 @@
 </head>
 
 <body>
-<div class="header">
-<p class="centro">Jacob Langvad/BXL</p>
+<div id="header">
+  <ul class="menu">
+    <li class="menuheadentry"><a href="">Jacob Langvad/BXL</a></li>
+    <li class="menuentry leftspaced"><a href="">Artikler</a></li>
+    <li class="menuentry"><a href="">Bøger</a></li>
+    <li class="menuentry"><a href="">Foredrag</a></li>
+    <li class="menuentry"><a href="">Radio</a></li>
 </div>

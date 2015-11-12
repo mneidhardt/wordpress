@@ -16,8 +16,9 @@
 get_header();
 
 ?>
-<div class="main">
-<p>Masser af tekst her.</p>
+<div id="main">
+<img src="/wp-content/uploads/2015/11/metromouth.jpg" title="Metromouth" class="imgfloatright">
+<p>Første linie her... og ellers Masser af tekst her.</p>
 <p>Masser af tekst her.</p>
 <p>Masser af tekst her.</p>
 <p>Masser af tekst her.</p>
