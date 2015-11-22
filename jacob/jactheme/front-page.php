@@ -48,3 +48,5 @@ get_header();
 <p>Masser af tekst her.</p>
 <p>Masser af tekst her.</p>
 </div>
+</body>
+</html>
