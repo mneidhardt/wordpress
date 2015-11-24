@@ -36,3 +36,7 @@ wp_enqueue_style( 'jacstyle', get_stylesheet_uri());
 if ( ! isset( $content_width ) ) {
 	$content_width = 660;
 }
+
+add_theme_support( 'post-thumbnails' );
+
+

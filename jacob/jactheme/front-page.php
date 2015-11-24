@@ -17,36 +17,26 @@ get_header();
 
 ?>
 <div id="main">
-<img src="/wp-content/uploads/2015/11/metromouth.jpg" title="Metromouth" class="imgfloatright">
-<p>Første linie her... og ellers Masser af tekst her.</p>
-<p>Masser af tekst her.</p>
-<p>Masser af tekst her.</p>
-<p>Masser af tekst her.</p>
-<p>Masser af tekst her.</p>
-<p>Masser af tekst her.</p>
-<p>Masser af tekst her.</p>
-<p>Masser af tekst her.</p>
-<p>Masser af tekst her.</p>
-<p>Masser af tekst her.</p>
-<p>Masser af tekst her.</p>
-<p>Masser af tekst her.</p>
-<p>Masser af tekst her.</p>
-<p>Masser af tekst her.</p>
-<p>Masser af tekst her.</p>
-<p>Masser af tekst her.</p>
-<p>Masser af tekst her.</p>
-<p>Masser af tekst her.</p>
-<p>Masser af tekst her.</p>
-<p>Masser af tekst her.</p>
-<p>Masser af tekst her.</p>
-<p>Masser af tekst her.</p>
-<p>Masser af tekst her.</p>
-<p>Masser af tekst her.</p>
-<p>Masser af tekst her.</p>
-<p>Masser af tekst her.</p>
-<p>Masser af tekst her.</p>
-<p>Masser af tekst her.</p>
-<p>Masser af tekst her.</p>
+    Min nye bog udkommer 26. november 2015 - <a href="http://forlagetcolumbus.dk/produkt/europas-svaere-faellesskab/produkt/vis/" target="_blank">mere info.</a>
+    <img src="/wp-content/uploads/2015/11/Omslag_Europas_med-billede-800x563.png" title="Bogomslag" class="imgnofloat">
+
 </div>
+<?php
+/*
+    $postarray = get_posts(array(
+                             'numberposts' => 1,
+                             'post_type' => 'forside'));
+
+    if (is_array($postarray) && sizeof($postarray) == 1) {
+        $post = $postarray[0];
+        print($post->post_content . '<br>');
+    } else {
+        print("Hey ho...");
+    }
+
+*/
+
+
+?>
 </body>
 </html>

@@ -70,6 +70,16 @@ body {
     width: 80%;
 }
 
+.imgfloatleft {
+    float: left;
+    margin: 0 1em 1em 0;
+    width: 80%;
+}
+
+.imgnofloat {
+    margin: 1em 0 1em 0;
+}
+
 a:link {
     color: black;
     text-decoration: none;

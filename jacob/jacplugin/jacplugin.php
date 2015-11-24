@@ -69,5 +69,16 @@ function create_post_type() {
       'has_archive' => true,
     )
   );
+
+  register_post_type( 'forside',
+    array(
+      'labels' => array(
+        'name' => __( 'Forside' ),
+        'singular_name' => __( 'Forside' )
+      ),
+      'public' => true,
+      'has_archive' => true,
+    )
+  );
 }
 ?>
