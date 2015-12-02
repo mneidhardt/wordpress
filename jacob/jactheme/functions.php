@@ -31,7 +31,7 @@
  */
 
 wp_enqueue_style( 'jacstyle', get_stylesheet_uri());
-// include_once('jacsettings.php');
+include_once('jacsettings.php');
 
 if ( ! isset( $content_width ) ) {
 	$content_width = 660;
@@ -39,4 +39,19 @@ if ( ! isset( $content_width ) ) {
 
 add_theme_support( 'post-thumbnails' );
 
+function set_featured_image($postid) {
+
+    // If this is just a revision, don't send the email.
+    if ( wp_is_post_revision( $postid ) )
+        return;
+
+    $media = get_attached_media( 'image' );
+
+    if (is_array($media) && sizeof($media) > 0) {
+        reset($media);
+         // I always use the first attached image as featured image (i.e. thumbnail):
+        set_post_thumbnail($postid, key($media));
+    }
+}
+add_action( 'save_post', 'set_featured_image' );
 
