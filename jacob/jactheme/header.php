@@ -25,7 +25,7 @@
   <ul class="menu">
     <li class="menuheadentry"><a href="/">Jacob Langvad/BXL</a></li>
     <li class="menuentry leftspaced"><a href="/artikler">Artikler</a></li>
-    <li class="menuentry"><a href="/boger/">Bøger</a></li>
+    <li class="menuentry"><a href="/boger">Bøger</a></li>
     <li class="menuentry"><a href="/foredrag">Foredrag</a></li>
     <li class="menuentry"><a href="/radio">Radio</a></li>
     <li class="menuentry leftspaced"><a href="/kontakt">Kontakt</a></li>

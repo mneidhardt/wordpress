@@ -13,17 +13,8 @@
 get_header();
 ?>
 <div id="main">
-		<?php
+<?php
 
-/*
-        $posts = get_posts(array(
-                                 'numberposts' => 10,
-                                 'post_type' => 'bog'));
-
-        foreach ($posts as $post) {
-            print($post->post_date . " " . $post->post_title . " --- " . $post->post_content . '<br>');
-        }
-*/
     while ( have_posts() ) : the_post();
         //get_template_part( 'content', 'page' );
         // the_title();

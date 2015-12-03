@@ -31,7 +31,7 @@ get_header();
         $post = $postarray[0];
         print($post->post_content . '<br>');
     } else {
-        print("Hey ho...");
+        error_log("Expected a post with type 'forside', containing data to display.");
     }
 
 */
