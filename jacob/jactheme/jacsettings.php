@@ -17,6 +17,7 @@ function jacconfig_menufunc() {
 
     $option1 = 'jacfbtoken';
     $hidden1 = 'hidden1';
+    $hidden2 = 'hidden2';
 
     $jacfbtoken = get_option($option1);
 
@@ -29,6 +30,12 @@ function jacconfig_menufunc() {
 
         // Put a "settings saved" message on the screen
         print('<div class="updated"><p><strong>New values saved.</strong></p></div>');
+    } elseif (isset($_POST[ $hidden2 ]) && $_POST[ $hidden2 ] == 'Y' ) {
+        createPage('Artikler');
+        createPage('Boger');
+        createPage('Foredrag');
+        createPage('Radio');
+        createPage('Kontakt');
     }
 
     print('<div class="wrap"><h2>' . __('Setup stuff', 'menu-test') . '</h2><table class="form-table">');
@@ -39,4 +46,20 @@ function jacconfig_menufunc() {
     print('<tr><td colspan="2"><input type="submit" name="Submit" value="Save" class="button-primary"/></td></tr>');
     print('</form></table><hr>');
 
+    print('<table class="form-table">');
+    print('<form name="form2" method="post" action="">');
+    print('<input type="hidden" name="' . $hidden2 . '" value="Y">');
+    print('<tr><td>Default pages</td><td><input type="submit" name="Create" value="Create" class="button-primary"/></td></tr>');
+    print('</form></table></div>');
+}
+
+function createPage($type) {
+    $post = array(
+        'post_title' => $type,
+        'post_content' => 'Never delete this page',
+        'post_status' => 'publish',
+        'post_type'  => 'page'
+        );
+
+    $PID = wp_insert_post($post);
 }
