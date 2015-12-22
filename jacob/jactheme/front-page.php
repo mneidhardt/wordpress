@@ -17,12 +17,8 @@ get_header();
 
 ?>
 <div id="main">
-    Min nye bog udkommer 26. november 2015 - <a href="http://forlagetcolumbus.dk/produkt/europas-svaere-faellesskab/produkt/vis/" target="_blank">mere info.</a>
-    <img src="/wp-content/uploads/2015/11/Omslag_Europas_med-billede-800x563.png" title="Bogomslag" class="imgnofloat">
-
-</div>
 <?php
-/*
+
     $postarray = get_posts(array(
                              'numberposts' => 1,
                              'post_type' => 'forside'));
@@ -34,9 +30,7 @@ get_header();
         error_log("Expected a post with type 'forside', containing data to display.");
     }
 
-*/
-
-
 ?>
+</div>
 </body>
 </html>
