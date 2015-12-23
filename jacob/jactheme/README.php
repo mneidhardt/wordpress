@@ -1,7 +1,7 @@
 <?php
 
 /*
-This is a theme for a site with 4-6 custom pust types.
+This is a theme for a site with 4-6 custom post types.
 The idea is to manually create a page for each custom post type,
 and the owner/admin can then start adding new custom post types.
 

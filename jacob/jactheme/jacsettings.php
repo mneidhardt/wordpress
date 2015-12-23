@@ -31,6 +31,7 @@ function jacconfig_menufunc() {
         // Put a "settings saved" message on the screen
         print('<div class="updated"><p><strong>New values saved.</strong></p></div>');
     } elseif (isset($_POST[ $hidden2 ]) && $_POST[ $hidden2 ] == 'Y' ) {
+        // Create these pages, so that the custom templates will work.
         createPage('Artikler');
         createPage('Boger');
         createPage('Foredrag');
@@ -53,13 +54,23 @@ function jacconfig_menufunc() {
     print('</form></table></div>');
 }
 
-function createPage($type) {
-    $post = array(
-        'post_title' => $type,
-        'post_content' => 'Never delete this page',
+function createPage($title) {
+    $args = array(
+        's' => $title,
         'post_status' => 'publish',
-        'post_type'  => 'page'
+        'post_type' => 'page'
         );
+    $posts_array = get_posts( $args );
+    if (is_array($posts_array) && count($posts_array)>0) {
+        error_log("Got " . count($posts_array) . " pages with title " . $title);
+    } else {
+        $post = array(
+            'post_title' => $title,
+            'post_content' => 'Never delete this page',
+            'post_status' => 'publish',
+            'post_type'  => 'page'
+            );
 
-    $PID = wp_insert_post($post);
+        $PID = wp_insert_post($post);
+    }
 }
