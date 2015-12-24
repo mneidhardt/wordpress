@@ -80,5 +80,16 @@ function create_post_type() {
       'has_archive' => true,
     )
   );
+
+  register_post_type( 'kontakt',
+    array(
+      'labels' => array(
+        'name' => __( 'Kontakt' ),
+        'singular_name' => __( 'Kontakt' )
+      ),
+      'public' => true,
+      'has_archive' => true,
+    )
+  );
 }
 ?>

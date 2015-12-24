@@ -15,11 +15,16 @@ get_header();
 <div id="main">
 <?php
 
-    while ( have_posts() ) : the_post();
-        //get_template_part( 'content', 'page' );
-        // the_title();
-        the_content();
-    endwhile;
+    $postarray = get_posts(array(
+                             'numberposts' => 1,
+                             'post_type' => 'kontakt'));
+
+    if (is_array($postarray) && sizeof($postarray) == 1) {
+        $post = $postarray[0];
+        print($post->post_content . '<br>');
+    } else {
+        error_log("Expected a post with type 'kontakt', containing data to display.");
+    }
 
 ?>
 </div>
