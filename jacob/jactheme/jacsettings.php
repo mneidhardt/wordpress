@@ -33,9 +33,10 @@ function jacconfig_menufunc() {
     } elseif (isset($_POST[ $hidden2 ]) && $_POST[ $hidden2 ] == 'Y' ) {
         // Create these pages, so that the custom templates will work.
         createPage('Artikler');
+        createPage('Radio');
         createPage('Boger');
         createPage('Foredrag');
-        createPage('Radio');
+        createPage('Kurser');
         createPage('Kontakt');
     }
 

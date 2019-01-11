@@ -24,9 +24,10 @@
 <div id="header">
   <ul class="menu">
     <li class="menuheadentry"><a href="/">Jacob Langvad/BXL</a></li>
-    <li class="menuentry leftspaced"><a href="/artikler">Artikler</a></li>
-    <li class="menuentry"><a href="/boger">Bøger</a></li>
-    <li class="menuentry"><a href="/foredrag">Foredrag</a></li>
-    <li class="menuentry"><a href="/radio">Radio</a></li>
-    <li class="menuentry leftspaced"><a href="/kontakt">Kontakt</a></li>
+    <li class="menuentry leftspaced"><a href="/Artikler">Artikler</a></li>
+    <li class="menuentry"><a href="/Radio">Radio</a></li>
+    <li class="menuentry"><a href="/Boger">Bøger</a></li>
+    <li class="menuentry"><a href="/Foredrag">Foredrag</a></li>
+    <li class="menuentry"><a href="/Kurser">Kurser</a></li>
+    <li class="menuentry leftspaced"><a href="/Kontakt">Kontakt</a></li>
 </div>

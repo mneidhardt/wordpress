@@ -19,7 +19,7 @@ get_header();
 
     $posts = get_posts(array(
         'numberposts' => 10,
-        'post_type' => 'artikel'));
+        'post_type' => 'kurser'));
 
     foreach ($posts as $post) {
         print('<div class="itementry">');

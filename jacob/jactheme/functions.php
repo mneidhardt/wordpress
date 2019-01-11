@@ -30,8 +30,6 @@
  * @since Twenty Fifteen 1.0
  */
 
-wp_enqueue_style( 'jacstyle', get_stylesheet_uri());
-include_once('jacsettings.php');
 
 if ( ! isset( $content_width ) ) {
 	$content_width = 660;
@@ -55,3 +53,9 @@ function set_featured_image($postid) {
 }
 add_action( 'save_post', 'set_featured_image' );
 
+function enqueue_mystyle() {
+    wp_enqueue_style( 'jacstyle', get_stylesheet_uri());
+}
+
+add_action('wp_enqueue_scripts', 'enqueue_mystyle');
+include_once('jacsettings.php');

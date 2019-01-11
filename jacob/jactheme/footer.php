@@ -1,1 +1,4 @@
-Nothing here in footer...
+<div id="footer">
+&copy; Jacob Langvad.
+</div>
+</html>

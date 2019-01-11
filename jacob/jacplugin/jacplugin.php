@@ -70,6 +70,17 @@ function create_post_type() {
     )
   );
 
+  register_post_type( 'kurser',
+    array(
+      'labels' => array(
+        'name' => __( 'Kurser' ),
+        'singular_name' => __( 'Kursus' )
+      ),
+      'public' => true,
+      'has_archive' => true,
+    )
+  );
+
   register_post_type( 'forside',
     array(
       'labels' => array(
